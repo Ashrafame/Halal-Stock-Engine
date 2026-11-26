@@ -16,7 +16,7 @@
 ```bash
 supabase login
 supabase link --project-ref <ref>
-supabase db push          # applies supabase/migrations in order
+supabase db push
 ```
 
 The migrations seed three plans and default system variables. For a non-production project, `supabase db reset` also applies `supabase/seed.sql` (12 demo stocks + quotes).

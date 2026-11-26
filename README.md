@@ -65,8 +65,10 @@ Halal Stock Engine helps investors answer one question quickly and honestly: *is
 ```bash
 npm install
 npm run dev:web
-# http://localhost:3000
 ```
+
+Open **http://localhost:3000** in your browser (the URL is not part of the command).
+If port 3000 is already in use, Next.js prints the alternate port it chose.
 
 With no Supabase env vars the app serves **clearly-labelled read-only demo data**. The full landing page, dashboard, screener, alerts, portfolio and admin console are explorable; mutations are disabled. There is no authentication bypass against a real project.
 
@@ -74,8 +76,8 @@ With no Supabase env vars the app serves **clearly-labelled read-only demo data*
 
 ```bash
 cp .env.example .env.local
-supabase start                      # prints API URL + anon/service keys
-supabase db reset                   # applies migrations + seed.sql
+supabase start
+supabase db reset
 npm run dev:web
 ```
 
@@ -92,20 +94,23 @@ where email = 'you@example.com';
 ### 3. Edge Functions
 
 ```bash
-cp .env.example supabase/.env.local   # fill Stripe/provider secrets
+cp .env.example supabase/.env.local
 supabase functions serve --env-file supabase/.env.local
 supabase functions deploy
 ```
+
+Fill Stripe/provider secrets in `supabase/.env.local` first.
 
 `stripe-webhook`, `sync-*` and `evaluate-alerts` have JWT verification disabled at the gateway and authenticate with a Stripe signature or the `x-cron-secret` header instead. `admin-api`, `stripe-checkout` and `stripe-portal` require a user JWT.
 
 ### 4. Mobile
 
 ```bash
-cp .env.example apps/mobile/.env.local   # keep only EXPO_PUBLIC_* values
+cp .env.example apps/mobile/.env.local
 npm run dev:mobile
-# press i / a / scan the QR code
 ```
+
+Keep only `EXPO_PUBLIC_*` values in that file. Press `i` for iOS, `a` for Android, or scan the QR code.
 
 Expo Go supports the full UI. Push notifications require a development build (`npx eas build --profile development`).
 

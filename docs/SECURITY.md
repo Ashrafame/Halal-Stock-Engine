@@ -111,7 +111,7 @@ Run before each release:
 ```bash
 npm run lint
 npm run typecheck
-npm test                 # includes SQL/RLS invariants
+npm test
 npm run functions:check
 ```
 
