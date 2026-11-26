@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CI: true
+  NEXT_TELEMETRY_DISABLED: '1'
+  HSE_DEMO_MODE: 'true'
+
+jobs:
+  quality:
+    name: Lint · Types · Tests · Web build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: TypeScript (shared, web, mobile)
+        run: npm run typecheck
+
+      - name: Unit tests + coverage
+        run: npm run test:coverage
+
+      - name: SQL / RLS security guard
+        run: npm run db:verify
+
+      - name: Build web (Next.js)
+        run: npm run build:web
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  edge-functions:
+    name: Edge Functions typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Deno check
+        run: |
+          deno check --config supabase/functions/deno.json \
+            supabase/functions/stripe-webhook/index.ts \
+            supabase/functions/stripe-checkout/index.ts \
+            supabase/functions/stripe-portal/index.ts \
+            supabase/functions/sync-market-data/index.ts \
+            supabase/functions/sync-compliance/index.ts \
+            supabase/functions/evaluate-alerts/index.ts \
+            supabase/functions/admin-api/index.ts

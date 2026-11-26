@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+
+# Build output
+dist/
+build/
+.next/
+out/
+.expo/
+.expo-shared/
+web-build/
+coverage/
+*.tsbuildinfo
+
+# Native
+apps/mobile/ios/
+apps/mobile/android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+supabase/.env
+supabase/.env.*
+!.env.example
+!supabase/.env.example
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Agent scratch state
+.ai/
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+
+# Logs
+*.log
+npm-debug.log*
