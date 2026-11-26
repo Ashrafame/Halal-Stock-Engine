@@ -98,6 +98,14 @@ Additional database defences:
 
 ## 8. Verification checklist
 
+The schema was applied to a throwaway PostgreSQL 16 cluster and exercised under
+`SET ROLE authenticated` with JWT claim stubs. Verified outcomes: 24/24 tables have
+RLS; profile/watchlist auto-provisioning; cross-user reads return zero rows; role
+escalation and IDOR inserts are blocked; haram price alerts raise `compliance_gate`;
+free quota stops at 3 alerts; `raw_payload` is unreadable; anon sees stocks but no
+compliance reports; cross-user `user_plan_limits` returns the caller's plan; admin
+override and downgrade notification flows work; suspended users cannot act.
+
 Run before each release:
 
 ```bash
